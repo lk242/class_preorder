@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Sun, Compass } from 'lucide-react';
+import { Compass, Sun } from 'lucide-react';
 import Calendar from '../components/Calendar';
 import CourseCard from '../components/CourseCard';
 import RegModal from '../components/RegModal';
@@ -13,13 +13,11 @@ export default function BookingPage() {
   const [selectedCourse, setSelectedCourse] = useState(null);
   const [successCourse, setSuccessCourse] = useState(null);
 
-  const filteredCourses = selectedDate
-    ? courses.filter(c => c.date === selectedDate)
-    : [];
+  const filteredCourses = selectedDate ? courses.filter(c => c.date === selectedDate) : [];
 
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <div className="mx-auto max-w-6xl p-4 sm:p-6">
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3 lg:gap-8">
         <div className="lg:col-span-2">
           <Calendar
             currentMonth={currentMonth}
@@ -30,12 +28,13 @@ export default function BookingPage() {
         </div>
 
         <div className="space-y-6">
-          <div className="bg-[#121625] rounded-[2.5rem] p-10 shadow-2xl border border-indigo-900/40 min-h-[500px]">
-            <h3 className="text-xl font-bold mb-8 text-amber-50 flex items-center border-b border-indigo-900/20 pb-4">
+          <div className="min-h-[320px] rounded-[2rem] border border-indigo-900/40 bg-[#121625] p-5 shadow-2xl sm:min-h-[500px] sm:rounded-[2.5rem] sm:p-8 lg:p-10">
+            <h3 className="mb-6 flex items-center border-b border-indigo-900/20 pb-4 text-lg font-bold text-amber-50 sm:mb-8 sm:text-xl">
               <Sun className="mr-3 text-amber-400" size={22} />
-              {selectedDate ? `${selectedDate} 能量場` : '選擇日期感知'}
+              {selectedDate ? `${selectedDate} 的可預約場次` : '請先選擇日期'}
             </h3>
-            <div className="space-y-6">
+
+            <div className="space-y-5 sm:space-y-6">
               {selectedDate ? (
                 filteredCourses.length > 0 ? (
                   filteredCourses.map(course => (
@@ -46,12 +45,18 @@ export default function BookingPage() {
                     />
                   ))
                 ) : (
-                  <div className="text-center py-24 text-indigo-400/40 italic font-light tracking-widest">沈睡的時刻，暫無場域開啟。</div>
+                  <div className="py-16 text-center text-sm italic tracking-widest text-indigo-400/50 sm:py-24">
+                    這一天目前沒有開放場次。
+                  </div>
                 )
               ) : (
-                <div className="flex flex-col items-center justify-center py-24 text-indigo-400/20">
-                  <Compass size={64} className="mb-6 opacity-10 animate-spin-slow" />
-                  <p className="text-center italic font-light tracking-widest text-sm">旋轉靈魂的羅盤<br />找尋與你共鳴的日期</p>
+                <div className="flex flex-col items-center justify-center py-16 text-indigo-400/30 sm:py-24">
+                  <Compass size={56} className="mb-6 opacity-20 animate-spin-slow" />
+                  <p className="text-center text-sm italic tracking-widest">
+                    先從左側日曆選一天
+                    <br />
+                    再查看可報名場次
+                  </p>
                 </div>
               )}
             </div>

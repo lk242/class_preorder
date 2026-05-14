@@ -2,14 +2,18 @@ import React from 'react';
 import { ChevronLeft, ChevronRight, Moon } from 'lucide-react';
 import { useCourses } from '../contexts/CourseContext';
 
+const WEEK_LABELS = ['日', '一', '二', '三', '四', '五', '六'];
+
 function getDaysInMonth(date) {
   const year = date.getFullYear();
   const month = date.getMonth();
   const days = [];
   const firstDay = new Date(year, month, 1).getDay();
   const lastDate = new Date(year, month + 1, 0).getDate();
-  for (let i = 0; i < firstDay; i++) days.push(null);
-  for (let i = 1; i <= lastDate; i++) days.push(new Date(year, month, i));
+
+  for (let i = 0; i < firstDay; i += 1) days.push(null);
+  for (let i = 1; i <= lastDate; i += 1) days.push(new Date(year, month, i));
+
   return days;
 }
 
@@ -34,41 +38,59 @@ export default function Calendar({ currentMonth, setCurrentMonth, selectedDate, 
   };
 
   return (
-    <div className="bg-[#121625] rounded-[2.5rem] p-10 shadow-2xl border border-indigo-900/40">
-      <div className="flex justify-between items-center mb-10">
-        <h2 className="text-2xl font-bold flex items-center text-amber-50 tracking-[0.2em]">
-          <Moon className="mr-3 text-amber-200" size={24} />
-          {currentMonth.getFullYear()}年 {currentMonth.getMonth() + 1}月
+    <div className="rounded-[2rem] border border-indigo-900/40 bg-[#121625] p-4 shadow-2xl sm:rounded-[2.5rem] sm:p-6 lg:p-10">
+      <div className="mb-6 flex items-center justify-between gap-3 sm:mb-10">
+        <h2 className="flex items-center text-lg font-bold tracking-[0.15em] text-amber-50 sm:text-2xl">
+          <Moon className="mr-2 text-amber-200 sm:mr-3" size={22} />
+          {currentMonth.getFullYear()} 年 {currentMonth.getMonth() + 1} 月
         </h2>
-        <div className="flex space-x-3">
-          <button onClick={prevMonth} className="p-3 bg-[#1c2237] hover:bg-indigo-800 rounded-full transition text-indigo-300"><ChevronLeft size={20} /></button>
-          <button onClick={nextMonth} className="p-3 bg-[#1c2237] hover:bg-indigo-800 rounded-full transition text-indigo-300"><ChevronRight size={20} /></button>
+        <div className="flex gap-2 sm:gap-3">
+          <button onClick={prevMonth} className="rounded-full bg-[#1c2237] p-2 text-indigo-300 transition hover:bg-indigo-800 sm:p-3">
+            <ChevronLeft size={20} />
+          </button>
+          <button onClick={nextMonth} className="rounded-full bg-[#1c2237] p-2 text-indigo-300 transition hover:bg-indigo-800 sm:p-3">
+            <ChevronRight size={20} />
+          </button>
         </div>
       </div>
 
-      <div className="grid grid-cols-7 gap-3">
-        {['日', '一', '二', '三', '四', '五', '六'].map(d => (
-          <div key={d} className="text-center text-xs font-bold text-indigo-400/40 uppercase tracking-[0.3em] pb-6">{d}</div>
+      <div className="grid grid-cols-7 gap-1.5 sm:gap-3">
+        {WEEK_LABELS.map((day) => (
+          <div key={day} className="pb-2 text-center text-[10px] font-bold tracking-[0.2em] text-indigo-400/50 sm:pb-4 sm:text-xs">
+            {day}
+          </div>
         ))}
+
         {days.map((date, i) => {
           const dateStr = formatDate(date);
           const hasCourse = courses.some(c => c.date === dateStr);
           const isSelected = selectedDate === dateStr;
+
           return (
-            <div key={i} onClick={() => date && setSelectedDate(dateStr)}
-              className={`h-16 md:h-24 rounded-2xl flex flex-col items-center justify-center cursor-pointer transition-all relative overflow-hidden
-                ${!date ? 'opacity-0 cursor-default' : 'border border-indigo-900/20 bg-[#1c2237]/30'}
-                ${isSelected ? 'bg-gradient-to-b from-amber-500 to-amber-700 text-white border-amber-400 scale-105 shadow-2xl z-10' : 'hover:border-indigo-500/50 hover:bg-[#1c2237]'}
-              `}>
+            <button
+              key={i}
+              type="button"
+              onClick={() => date && setSelectedDate(dateStr)}
+              disabled={!date}
+              className={`relative flex h-12 flex-col items-center justify-center overflow-hidden rounded-xl border text-sm transition-all sm:h-16 sm:rounded-2xl sm:text-base md:h-24 ${
+                !date
+                  ? 'cursor-default border-transparent bg-transparent opacity-0'
+                  : 'border-indigo-900/20 bg-[#1c2237]/30'
+              } ${
+                isSelected
+                  ? 'z-10 scale-105 border-amber-400 bg-gradient-to-b from-amber-500 to-amber-700 text-white shadow-2xl'
+                  : 'hover:border-indigo-500/50 hover:bg-[#1c2237]'
+              }`}
+            >
               {date && (
                 <>
-                  <span className={`text-lg font-light ${isSelected ? 'font-bold' : 'text-indigo-100'}`}>{date.getDate()}</span>
+                  <span className={`font-light ${isSelected ? 'font-bold' : 'text-indigo-100'}`}>{date.getDate()}</span>
                   {hasCourse && !isSelected && (
-                    <div className="absolute bottom-3 w-1.5 h-1.5 bg-amber-400 rounded-full shadow-[0_0_8px_rgba(251,191,36,0.8)] animate-pulse"></div>
+                    <div className="absolute bottom-2 h-1.5 w-1.5 rounded-full bg-amber-400 shadow-[0_0_8px_rgba(251,191,36,0.8)] animate-pulse sm:bottom-3" />
                   )}
                 </>
               )}
-            </div>
+            </button>
           );
         })}
       </div>

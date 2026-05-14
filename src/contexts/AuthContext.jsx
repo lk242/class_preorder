@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { onAuthStateChanged, signInWithPopup, signOut, GoogleAuthProvider } from 'firebase/auth';
-import { auth, googleProvider, isConfigured } from '../config/firebase';
+import { auth, isConfigured } from '../config/firebase';
 
 const AuthContext = createContext(null);
 
@@ -32,7 +32,8 @@ export function AuthProvider({ children }) {
       alert('Firebase 尚未設定。\n請複製 .env.example 為 .env 並填入你的 Firebase 專案資訊。');
       return null;
     }
-    const provider = googleProvider;
+    const provider = new GoogleAuthProvider();
+    provider.setCustomParameters({ prompt: 'select_account' });
     scopes.forEach(s => provider.addScope(s));
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);

@@ -3,6 +3,29 @@ import { Navigate } from 'react-router-dom';
 import { Lock, RefreshCw } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 
+function getLoginErrorMessage(err) {
+  const code = err?.code || 'unknown';
+
+  switch (code) {
+    case 'auth/unauthorized-domain':
+      return '這個部署網域尚未加入 Firebase Authentication 的 Authorized domains。請到 Firebase Console 補上目前網站網域。';
+    case 'auth/operation-not-allowed':
+      return 'Firebase Authentication 尚未啟用 Google 登入。請到 Firebase Console 的 Sign-in method 開啟 Google provider。';
+    case 'auth/popup-blocked':
+      return '瀏覽器阻擋了 Google 登入視窗。請允許彈出視窗後再試一次。';
+    case 'auth/popup-closed-by-user':
+      return '登入視窗已關閉，尚未完成 Google 登入。';
+    case 'auth/cancelled-popup-request':
+      return '登入程序被新的登入請求中斷，請再試一次。';
+    case 'auth/invalid-api-key':
+      return 'Firebase API key 無效，請確認部署環境的 VITE_FIREBASE_* 設定。';
+    case 'auth/network-request-failed':
+      return '登入請求失敗，請檢查目前網路連線或 Firebase 服務是否可用。';
+    default:
+      return `登入失敗：${code}。請確認 Firebase 設定，並查看瀏覽器主控台取得詳細資訊。`;
+  }
+}
+
 export default function LoginPage() {
   const { user, loading, isAdmin, loginWithGoogle, logout } = useAuth();
   const [isLogging, setIsLogging] = useState(false);
@@ -33,7 +56,7 @@ export default function LoginPage() {
     try {
       await loginWithGoogle();
     } catch (err) {
-      setError('登入失敗，請確認 Firebase 設定或稍後再試。');
+      setError(getLoginErrorMessage(err));
       console.error(err);
     } finally {
       setIsLogging(false);
