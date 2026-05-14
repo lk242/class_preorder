@@ -1,0 +1,15 @@
+{
+  "projects": {
+    "default": "cosmic-course-booking"
+  },
+  "targets": {
+    "cosmic-course-booking": {
+      "hosting": {
+        "main": [
+          "9m-wowsai"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}
