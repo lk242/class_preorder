@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "project_name": "course-app",
+  "project_root": "C:/Users/forst899/CLI_Test/course-app",
+  "repo_url": "https://github.com/lk242/class_preorder.git",
+  "tech_stack": ["react", "vite", "tailwindcss-v4", "firebase-hosting", "firestore", "firebase-auth", "firebase-functions"],
+  "tags": ["booking", "course", "cosmic-theme"],
+  "entry_points": ["src/main.jsx", "src/App.jsx", "functions/index.js"],
+  "owners": ["lukewolf899@gmail.com", "forst228@gmail.com"],
+  "notes": "宇宙光語課程預約系統，部署於 Firebase Hosting 雙站點"
+}
