@@ -33,12 +33,15 @@ export function AuthProvider({ children }) {
       return null;
     }
     const provider = new GoogleAuthProvider();
-    provider.setCustomParameters({ prompt: 'select_account' });
+    provider.setCustomParameters({ prompt: scopes.length > 0 ? 'consent select_account' : 'select_account' });
     scopes.forEach(s => provider.addScope(s));
     const result = await signInWithPopup(auth, provider);
     const credential = GoogleAuthProvider.credentialFromResult(result);
     if (credential?.accessToken) setAccessToken(credential.accessToken);
-    return result.user;
+    return {
+      user: result.user,
+      accessToken: credential?.accessToken || null
+    };
   };
 
   const logout = async () => {

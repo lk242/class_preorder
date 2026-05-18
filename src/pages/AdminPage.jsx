@@ -35,6 +35,8 @@ const DEFAULT_NOTIFICATION_SETTINGS = {
     .filter(Boolean)
 };
 
+const CALENDAR_EVENTS_SCOPE = 'https://www.googleapis.com/auth/calendar.events';
+
 export default function AdminPage() {
   const { user, accessToken, loginWithGoogle, logout } = useAuth();
   const { courses, addCourse, removeCourse, removeRegistration, getRegCount } = useCourses();
@@ -94,10 +96,10 @@ export default function AdminPage() {
   const handleCalendarSync = async () => {
     setIsSyncing(true);
     try {
-      let token = accessToken;
+      const authResult = await loginWithGoogle([CALENDAR_EVENTS_SCOPE]);
+      const token = authResult?.accessToken || accessToken;
       if (!token) {
-        await loginWithGoogle(['https://www.googleapis.com/auth/calendar.events']);
-        alert('已要求 Google 日曆授權，請再次按下同步按鈕完成同步。');
+        alert('無法取得 Google 日曆授權，請重新登入後再試一次。');
         return;
       }
 

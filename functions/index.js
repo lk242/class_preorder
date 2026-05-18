@@ -31,7 +31,7 @@ exports.sendAdminRegistrationNotification = onDocumentCreated(
     const settings = settingsSnap.exists ? settingsSnap.data() : {};
     const enabled = Boolean(settings?.adminRegistrationEmailEnabled);
     const recipients = Array.isArray(settings?.adminNotificationEmails)
-      ? settings.adminNotificationEmails.filter(Boolean)
+      ? settings.adminNotificationEmails.map((email) => String(email).trim()).filter(Boolean)
       : [];
 
     if (!enabled) {
@@ -44,12 +44,12 @@ exports.sendAdminRegistrationNotification = onDocumentCreated(
       return;
     }
 
-    const smtpHost = SMTP_HOST.value();
-    const smtpPort = Number(SMTP_PORT.value() || '587');
-    const smtpUser = SMTP_USER.value();
-    const smtpPass = SMTP_PASS.value();
-    const smtpFrom = SMTP_FROM.value();
-    const smtpSecure = String(SMTP_SECURE.value() || '').toLowerCase() === 'true';
+    const smtpHost = String(SMTP_HOST.value() || '').trim();
+    const smtpPort = Number(String(SMTP_PORT.value() || '587').trim());
+    const smtpUser = String(SMTP_USER.value() || '').trim();
+    const smtpPass = String(SMTP_PASS.value() || '').trim();
+    const smtpFrom = String(SMTP_FROM.value() || '').trim();
+    const smtpSecure = String(SMTP_SECURE.value() || '').trim().toLowerCase() === 'true';
 
     if (!smtpHost || !smtpUser || !smtpPass || !smtpFrom) {
       logger.warn('SMTP secrets are incomplete; skipping admin registration email send.');
